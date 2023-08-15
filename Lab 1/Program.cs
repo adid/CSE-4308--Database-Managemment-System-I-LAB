@@ -13,18 +13,13 @@ namespace Lab_1
 
     public class Program
     {
-        public static void Main(string[] args)
+        public static void PrintAverageGPA()
         {
             //* Task 1 *//
 
             string path = @"D:\Study\Semester 3, Winter 2023\CSE 4308 Lab  Database Managemment System I\Lab 1\grades.txt";
 
-            //using(StreamReader sw = new StreamReader(path)) 
-            //{ string a = sw.ReadToEnd() ;
-            //    Console.WriteLine(a);
-            //}
-            
-            
+
             if (File.Exists(path))
             {
                 string[] lines = File.ReadAllLines(path);
@@ -36,51 +31,75 @@ namespace Lab_1
                 {
                     //Console.WriteLine(line);
 
-                    string[] strings = line.Split(";", 3,StringSplitOptions.None);
+                    string[] strings = line.Split(";", 3, StringSplitOptions.None);
 
                     double cgpa = Convert.ToDouble(strings[1]);
                     total_cgpa += cgpa;
-                    count++;                    
+                    count++;
                 }
-                
+
 
                 double average = total_cgpa / count;
-                average= Math.Round(average, 2);
+                average = Math.Round(average, 2);
 
                 Console.Write("Average CGPA: ");
-                Console.WriteLine(average+"\n");
+                Console.WriteLine(average + "\n");
             }
+        }
 
+        public static void AddStudent()
+        {
             //* Task 2 *//
-            
+            string path = @"D:\Study\Semester 3, Winter 2023\CSE 4308 Lab  Database Managemment System I\Lab 1\grades.txt";
+            int id=0;
+
             Console.WriteLine("Add GPA Input");
             Console.Write("Student Id: ");
-            int id= Convert.ToInt32(Console.ReadLine());
+
+            try 
+            {
+                int idd = Convert.ToInt32(Console.ReadLine());
+
+                if (idd < 2e9 || idd > 0) 
+                {
+                    id = idd;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error- "+ex.Message);
+                return;
+            }
+            
             Console.Write("GPA: ");
-            double gpa= Convert.ToDouble(Console.ReadLine());
+            double gpa = Convert.ToDouble(Console.ReadLine());
             Console.Write("Semester: ");
-            int semester= Convert.ToInt32(Console.ReadLine());
+            int semester = Convert.ToInt32(Console.ReadLine());
 
 
-            if(id > 2e9 || id <= 0 || gpa <2.50 || gpa>4.00 || semester<=0 || semester >= 8)
+            if (id>2e9 || id<=0|| gpa < 2.50 || gpa > 4.00 || semester <= 0 || semester >= 8)
             {
                 Console.WriteLine("Error");
             }
 
             else
             {
-                using(StreamWriter sw= File.AppendText(path))
+                using (StreamWriter sw = File.AppendText(path))
                 {
-                    sw.WriteLine(id+";"+gpa+";"+semester);
+                    sw.WriteLine(id + ";" + gpa + ";" + semester);
                 }
                 Console.WriteLine("Input added");
             }
+        }
 
+        public static void LowestSemester()
+        {
             //* Task 3*//
 
             Console.Write("Student Id: ");
             int id3 = Convert.ToInt32(Console.ReadLine());
 
+            string path = @"D:\Study\Semester 3, Winter 2023\CSE 4308 Lab  Database Managemment System I\Lab 1\grades.txt";
             string path2 = @"D:\Study\Semester 3, Winter 2023\CSE 4308 Lab  Database Managemment System I\Lab 1\studentInfo.txt";
             bool account = false;
 
@@ -94,45 +113,45 @@ namespace Lab_1
 
                     string[] strings = line.Split(";", 5, StringSplitOptions.None);
 
-                    if(id3 == Convert.ToInt32(strings[0]))
+                    if (id3 == Convert.ToInt32(strings[0]))
                     {
-                        Console.WriteLine(strings[1]); 
+                        Console.WriteLine(strings[1]);
                         account = true;
                         break;
                     }
                 }
 
-                if (account== false)
+                if (account == false)
                 {
                     Console.WriteLine("Error");
                 }
             }
 
-            if (File.Exists(path) && account== true)
+            if (File.Exists(path) && account == true)
             {
                 string[] lines = File.ReadAllLines(path);
                 account = false;
 
                 double lowest_cgpa = 4.00;
-                int lowest_semester= 0;
+                int lowest_semester = 0;
 
                 foreach (string line in lines)
                 {
                     string[] strings = line.Split(";", 3, StringSplitOptions.None);
 
-                    if(id3== Convert.ToInt32(strings[0]))
+                    if (id3 == Convert.ToInt32(strings[0]))
                     {
                         account = true;
                         double cgpa = Convert.ToDouble(strings[1]);
-                        if (cgpa < lowest_cgpa) 
+                        if (cgpa < lowest_cgpa)
                         {
                             lowest_cgpa = cgpa;
                             lowest_semester = Convert.ToInt32(strings[2]);
                         }
-                    }                   
+                    }
                 }
 
-                if (account== false)
+                if (account == false)
                 {
                     Console.WriteLine("Error");
                 }
@@ -140,6 +159,23 @@ namespace Lab_1
                 {
                     Console.WriteLine(lowest_semester);
                 }
+            }
+        }
+
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Press 1 to Print Average CGPA");
+            Console.WriteLine("Press 2 to Add a new student");
+            Console.WriteLine("Press 3 to Print the semester in which a student got the lowest CGPA\n");
+
+            int key= Convert.ToInt32(Console.ReadLine());
+
+            switch (key)
+            {
+                case 1: PrintAverageGPA(); break;
+                case 2: AddStudent(); break;
+                case 3: LowestSemester(); break;
+                default: Environment.Exit(0); break;
             }
         }
     }
